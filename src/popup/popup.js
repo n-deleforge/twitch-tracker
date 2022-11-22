@@ -10,21 +10,21 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- *  Fulfill table with data of streamers
+ *  Fulfill table with data
  **/
 
 const displayData = data => {
     for (let i = 0; i < data.length; i++) {
-        const 
+        const
             tr = document.createElement("tr"),
-            td1 = document.createElement("td"),
-            td2 = document.createElement("td");
+            tdStreamer = document.createElement("td"),
+            tdMinutes = document.createElement("td");
     
         document.getElementById("tbody").append(tr);
-        tr.append(td1);
-        tr.append(td2);
+        tr.append(tdStreamer);
+        tr.append(tdMinutes);
 
-        td1.innerHTML = `${data[i]['streamer']}`;
-        td2.innerHTML = `${data[i]["minutes"]}`
+        tdStreamer.textContent = `${data[i]['streamer']}`;
+        tdMinutes.textContent = `${data[i]["minutes"]}`
     }
 };
