@@ -136,7 +136,8 @@ function startTracker() {
     if (seconds % 10 == 1) {
         const checkStreamer = document.title.split(" -")[0].toUpperCase();
         if (checkStreamer != currentStreamer.toUpperCase()) {
-            console.log("Info : stream has changed, reload of the extension in 5 seconds")
+            console.log("Info : stream has changed, reload of the extension in 5 seconds");
+            clearInterval(tracker);
             setTimeout(twitchTracker, 5000);
         }
     }

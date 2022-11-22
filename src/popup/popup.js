@@ -16,6 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const displayData = data => {
     for (let i = 0; i < data.length; i++) {
         const
+            streamer = data[i]['streamer'],
             tr = document.createElement("tr"),
             tdStreamer = document.createElement("td"),
             tdMinutes = document.createElement("td");
@@ -24,7 +25,16 @@ const displayData = data => {
         tr.append(tdStreamer);
         tr.append(tdMinutes);
 
-        tdStreamer.textContent = `${data[i]['streamer']}`;
-        tdMinutes.textContent = `${data[i]["minutes"]}`
+        let 
+            hours = 0, 
+            minutes = data[i]["minutes"];
+
+        if (minutes > 60) {
+            hours = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+        }
+
+        tdStreamer.textContent = streamer
+        tdMinutes.textContent = `${hours}h ${minutes}m`;
     }
 };
