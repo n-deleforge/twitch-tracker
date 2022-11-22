@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "TwitchTracker",
+    "version": "0.1",
+    "author": "n-deleforge",
+    "homepage_url": "https://github.com/n-deleforge/twitch-tracker",
+    "description": "Track how much time you spend watching your favourites streamers.",
+    "icons": {
+        "128": "icons/icon-128.png",
+        "256": "icons/icon-256.png"
+    },
+
+    "browser_action": {
+        "browser_style": true,
+        "default_popup": "popup/popup.html"
+    },
+
+    "content_scripts": [
+        {
+            "run_at": "document_idle",
+            "matches": ["https://www.twitch.tv/*"],
+            "js": ["twitchTracker.js"]
+        }
+    ]
+}
