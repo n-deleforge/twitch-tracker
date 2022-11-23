@@ -3,17 +3,25 @@
 <head>
     <link rel="stylesheet" type="text/css" href="popup.css" /> 
     <script type="text/javascript" src="popup.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        h3 {
+            padding: 0, 5px;
+        }
+        #message {
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
 </head>
 
 <body>
     <h3>Twitch Tracker</h3>
-    <table>
-        <thead>
-            <th>Streamer</th>
-            <th>Watch time</th>
-        </thead>
-        <tbody id="tbody"></tbody>
-    </table>
+    <div id="message">Loading ...</div>
+    <div id="content"></div>
 </body>
 
 </html>

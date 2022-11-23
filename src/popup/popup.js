@@ -14,16 +14,37 @@ window.addEventListener('DOMContentLoaded', () => {
  **/
 
 const displayData = data => {
+    document.getElementById("message").remove();
+
+    // Create table
+    const 
+        content  = document.getElementById("content"),
+        table = document.createElement("table"),
+        thead = document.createElement("thead"),
+        thStreamer = document.createElement("th"),
+        thWatchtime = document.createElement("th"),
+        tbody = document.createElement("tbody");
+    
+    content.append(table);
+    table.append(thead);
+    thead.append(thStreamer);
+    thead.append(thWatchtime);
+    table.append(tbody);
+
+    thStreamer.textContent = "Streamer";
+    thWatchtime.textContent = "Watchtime";
+
+    // Create table data
     for (let i = 0; i < data.length; i++) {
         const
             streamer = data[i]['streamer'],
             tr = document.createElement("tr"),
             tdStreamer = document.createElement("td"),
-            tdMinutes = document.createElement("td");
+            tdWatchtime = document.createElement("td");
     
-        document.getElementById("tbody").append(tr);
+        tbody.append(tr);
         tr.append(tdStreamer);
-        tr.append(tdMinutes);
+        tr.append(tdWatchtime);
 
         let 
             hours = 0, 
@@ -35,6 +56,6 @@ const displayData = data => {
         }
 
         tdStreamer.textContent = streamer
-        tdMinutes.textContent = `${hours}h ${minutes}m`;
+        tdWatchtime.textContent = `${hours}h ${minutes}m`;
     }
 };

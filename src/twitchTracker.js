@@ -104,11 +104,11 @@ function updateDatabase() {
  **/
 
 function twitchTracker() {
-    currentStreamer = document.title.split(" -")[0];
-    const isLive = (currentStreamer != "Twitch" || window.location.href.split("/")[3] != "videos");
+    currentStreamer = window.location.href.split("/")[3];
+    const isNotLive = (currentStreamer == "" || currentStreamer == "videos");
 
     // Check if the current video is a live stream and gather all the data needed
-    if (isLive) {
+    if (!isNotLive) {
         allData = getAllData();
         streamerData = getStreamerData();
         seconds = 0;
@@ -124,6 +124,7 @@ function twitchTracker() {
     }
 }
 
+
 /**
  *  Tracker function : count time and check stream changes
  * @return {void}
@@ -134,7 +135,7 @@ function startTracker() {
 
     // Every 10 seconds, check if the live stream is still going on
     if (seconds % 10 == 1) {
-        const checkStreamer = document.title.split(" -")[0].toUpperCase();
+        const checkStreamer =  window.location.href.split("/")[3].toUpperCase();
         if (checkStreamer != currentStreamer.toUpperCase()) {
             console.log("Info : stream has changed, reload of the extension in 5 seconds");
             clearInterval(tracker);

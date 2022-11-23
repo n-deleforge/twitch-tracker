@@ -18,5 +18,6 @@ This extension is still on early development. It might not working because of yo
 
 # Changelog
 
+- 0.2.1 : Streamer detection modified (URL instead of Window title)
 - 0.2 : Fix a problem with multiples trackers started instead of only one.
 - 0.1 : Initial release.
