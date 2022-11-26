@@ -104,11 +104,10 @@ function updateDatabase() {
  **/
 
 function twitchTracker() {
-    const url = window.location.href.split("/")[3] != "";
+    const url = window.location.href.split("/")[3];
     const name = document.getElementsByTagName("h1")[0].innerText;
     const video = document.getElementsByTagName("video")[0];
 
-    // Check if the current page is a live stream and gather all the data needed
     if (url && name && video) {
         currentStreamer = name;
         allData = getAllData();
@@ -116,16 +115,14 @@ function twitchTracker() {
         seconds = 0;
         minutes = (streamerData) ? streamerData : 0;
         tracker = setInterval(startTracker, 1000);
-    
+
         console.log(`Info : current streamer is ${currentStreamer}`);
     }
-    // Wait and call again the function later
     else {
-        console.log("Info : not watching a live stream, new try in 10 seconds")
+        console.log("Info : not watching a live stream, new try in a few seconds")
         setTimeout(twitchTracker, 10000);
     }
 }
-
 
 /**
  *  Tracker function : count time and check stream changes
@@ -137,13 +134,22 @@ function startTracker() {
 
     // Every 10 seconds, check if the live stream is still going on
     if (seconds % 10 == 1) {
-        const videoPaused = document.getElementsByTagName("video")[0].paused;
-        const checkStreamer =  document.getElementsByTagName("h1")[0].innerText.toUpperCase();
+        const video = document.getElementsByTagName("video")[0];
 
-        if (videoPaused || checkStreamer != currentStreamer.toUpperCase()) {
-            console.log("Info : stream is paused or has changed, reload of the extension in 5 seconds");
-            clearInterval(tracker);
-            setTimeout(twitchTracker, 5000);
+        if (video) {
+            const videoPaused = video.paused;
+            const checkStreamer = document.getElementsByTagName("h1")[0].innerText.toUpperCase();
+    
+            if (videoPaused || checkStreamer != currentStreamer.toUpperCase()) {
+                console.log("Info : stream is loading, is paused or has changed, reload in a few seconds");
+                clearInterval(tracker);
+                setTimeout(twitchTracker, 5000);
+            }
+        }
+        else {
+            console.log("Info : not watching a live stream, new try in a few seconds");
+                clearInterval(tracker);
+                setTimeout(twitchTracker, 5000);
         }
     }
 
