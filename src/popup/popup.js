@@ -14,9 +14,6 @@ window.addEventListener('DOMContentLoaded', () => {
  **/
 
 const displayData = data => {
-    document.getElementById("message").remove();
-
-    // Create table
     const 
         content  = document.getElementById("content"),
         table = document.createElement("table"),
@@ -25,37 +22,41 @@ const displayData = data => {
         thWatchtime = document.createElement("th"),
         tbody = document.createElement("tbody");
     
-    content.append(table);
-    table.append(thead);
-    thead.append(thStreamer);
-    thead.append(thWatchtime);
-    table.append(tbody);
+    if (data) {
+        document.getElementById("message").remove();
 
-    thStreamer.textContent = "Streamer";
-    thWatchtime.textContent = "Watchtime";
-
-    // Create table data
-    for (let i = 0; i < data.length; i++) {
-        const
-            streamer = data[i]['streamer'],
-            tr = document.createElement("tr"),
-            tdStreamer = document.createElement("td"),
-            tdWatchtime = document.createElement("td");
+        content.append(table);
+        table.append(thead);
+        thead.append(thStreamer);
+        thead.append(thWatchtime);
+        table.append(tbody);
     
-        tbody.append(tr);
-        tr.append(tdStreamer);
-        tr.append(tdWatchtime);
-
-        let 
-            hours = 0, 
-            minutes = data[i]["minutes"];
-
-        if (minutes > 60) {
-            hours = Math.floor(minutes / 60);
-            minutes = minutes % 60;
+        thStreamer.textContent = "Streamer";
+        thWatchtime.textContent = "Watchtime";
+    
+        // Create table data
+        for (let i = 0; i < data.length; i++) {
+            const
+                streamer = data[i]['streamer'],
+                tr = document.createElement("tr"),
+                tdStreamer = document.createElement("td"),
+                tdWatchtime = document.createElement("td");
+        
+            tbody.append(tr);
+            tr.append(tdStreamer);
+            tr.append(tdWatchtime);
+    
+            let 
+                hours = 0, 
+                minutes = data[i]["minutes"];
+    
+            if (minutes > 60) {
+                hours = Math.floor(minutes / 60);
+                minutes = minutes % 60;
+            }
+    
+            tdStreamer.textContent = streamer
+            tdWatchtime.textContent = `${hours}h ${minutes}m`;
         }
-
-        tdStreamer.textContent = streamer
-        tdWatchtime.textContent = `${hours}h ${minutes}m`;
     }
 };

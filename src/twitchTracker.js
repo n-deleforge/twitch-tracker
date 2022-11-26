@@ -2,7 +2,7 @@
 // ======= VARIABLES
 
 const
-    APP_VERSION = "0.1",
+    APP_VERSION = "0.3",
     APP_NAME = "Twitch Tracker",
     GITHUB_LINK = "https://github.com/n-deleforge/twitch-tracker/";
 
@@ -104,11 +104,13 @@ function updateDatabase() {
  **/
 
 function twitchTracker() {
-    currentStreamer = window.location.href.split("/")[3];
-    const isNotLive = (currentStreamer == "" || currentStreamer == "videos");
+    const url = window.location.href.split("/")[3] != "";
+    const name = document.getElementsByTagName("h1")[0].innerText;
+    const video = document.getElementsByTagName("video")[0];
 
-    // Check if the current video is a live stream and gather all the data needed
-    if (!isNotLive) {
+    // Check if the current page is a live stream and gather all the data needed
+    if (url && name && video) {
+        currentStreamer = name;
         allData = getAllData();
         streamerData = getStreamerData();
         seconds = 0;
@@ -135,9 +137,11 @@ function startTracker() {
 
     // Every 10 seconds, check if the live stream is still going on
     if (seconds % 10 == 1) {
-        const checkStreamer =  window.location.href.split("/")[3].toUpperCase();
-        if (checkStreamer != currentStreamer.toUpperCase()) {
-            console.log("Info : stream has changed, reload of the extension in 5 seconds");
+        const videoPaused = document.getElementsByTagName("video")[0].paused;
+        const checkStreamer =  document.getElementsByTagName("h1")[0].innerText.toUpperCase();
+
+        if (videoPaused || checkStreamer != currentStreamer.toUpperCase()) {
+            console.log("Info : stream is paused or has changed, reload of the extension in 5 seconds");
             clearInterval(tracker);
             setTimeout(twitchTracker, 5000);
         }
