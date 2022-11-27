@@ -5,7 +5,11 @@
 window.addEventListener('DOMContentLoaded', () => {
     browser.tabs.query({ active: true, currentWindow: true },
         tabs => {
-            browser.tabs.sendMessage(tabs[0].id, { from: 'popup', subject: 'sendData' }, displayData);
+            browser.tabs.sendMessage(
+                tabs[0].id,
+                { from: 'popup', subject: 'sendData' },
+                displayData
+            );
         });
 });
 
@@ -14,14 +18,14 @@ window.addEventListener('DOMContentLoaded', () => {
  **/
 
 const displayData = data => {
-    const 
-        content  = document.getElementById("content"),
+    const
+        content = document.getElementById("content"),
         table = document.createElement("table"),
         thead = document.createElement("thead"),
         thStreamer = document.createElement("th"),
         thWatchtime = document.createElement("th"),
         tbody = document.createElement("tbody");
-    
+
     if (data) {
         document.getElementById("message").remove();
 
@@ -30,10 +34,10 @@ const displayData = data => {
         thead.append(thStreamer);
         thead.append(thWatchtime);
         table.append(tbody);
-    
+
         thStreamer.textContent = "Streamer";
         thWatchtime.textContent = "Watchtime";
-    
+
         // Create table data
         for (let i = 0; i < data.length; i++) {
             const
@@ -41,20 +45,20 @@ const displayData = data => {
                 tr = document.createElement("tr"),
                 tdStreamer = document.createElement("td"),
                 tdWatchtime = document.createElement("td");
-        
+
             tbody.append(tr);
             tr.append(tdStreamer);
             tr.append(tdWatchtime);
-    
-            let 
-                hours = 0, 
+
+            let
+                hours = 0,
                 minutes = data[i]["minutes"];
-    
+
             if (minutes > 60) {
                 hours = Math.floor(minutes / 60);
                 minutes = minutes % 60;
             }
-    
+
             tdStreamer.textContent = streamer
             tdWatchtime.textContent = `${hours}h ${minutes}m`;
         }

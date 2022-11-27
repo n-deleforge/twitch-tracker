@@ -2,9 +2,14 @@
 // ======= VARIABLES
 
 const
-    APP_VERSION = "0.3",
+    APP_VERSION = "0.3.2",
     APP_NAME = "Twitch Tracker",
-    GITHUB_LINK = "https://github.com/n-deleforge/twitch-tracker/";
+    GITHUB_LINK = "https://github.com/n-deleforge/twitch-tracker/",
+    TIMEOUT_RETRY = 10000,
+    RETRY_MESSAGE = "not watching a live stream or detection not working, new try in a few seconds";
+    TIMETOUT_RELOAD = 5000,
+    RELOAD_MESSAGE = "stream is loading, is paused or has changed, reload in a few seconds";
+    INTERVAL_TRACKER = 1000;
 
 let tracker, currentStreamer, allData, streamerData, seconds, minutes;
 
@@ -24,14 +29,12 @@ sendDataToPopup();
  **/
 
 function getAllData() {
-    const twitchTracker = localStorage.getItem("twitchTracker");
+    const dataExisting = localStorage.getItem("twitchTracker");
 
-    // If there is no saved data, an empty array is created
-    if (!twitchTracker) {
-        localStorage.setItem('twitchTracker', "");
+    if (!dataExisting) {
+        localStorage.setItem("twitchTracker", "");
         return new Array();
     }
-
     else return JSON.parse(localStorage.getItem("twitchTracker"));
 }
 
@@ -41,24 +44,24 @@ function getAllData() {
  **/
 
 function getStreamerData() {
-    if (allData.length == 0) {
-        console.log("Info : database empty")
+    const lengthDatabase = allData.length;
+    const emptyDatabase = (allData.length == 0);
+
+    if (emptyDatabase) {
+        console.log("Info : empty database");
         InsertToDatabase();
     }
     else {
-        console.log("Info : searching streamer")
+        for (let i = 0; i < lengthDatabase; i++) {
+            const e = allData[i];
 
-        for (let i = 0; i < allData.length; i++) {
-            const element = allData[i];
-
-            // Verify streamer name in uppercase to avoid problems
-            if (element["streamer"].toUpperCase() == currentStreamer.toUpperCase()) {
-                console.log("Info : streamer found")
-                return element["minutes"];
+            if (e["streamer"].toUpperCase() == currentStreamer.toUpperCase()) {
+                console.log("Info : streamer found");
+                return e["minutes"];
             }
         }
 
-        console.log("Info : streamer not found")
+        console.log("Info : streamer not found");
         InsertToDatabase();
     }
 }
@@ -69,10 +72,10 @@ function getStreamerData() {
  **/
 
 function InsertToDatabase() {
-    console.log("Info : creating new data");
     const newData = { streamer: currentStreamer, minutes: 0 };
-    allData = allData.concat(newData);
 
+    console.log("Info : new data created");
+    allData = allData.concat(newData);
     streamerData = getStreamerData();
     localStorage.setItem("twitchTracker", JSON.stringify(allData));
 }
@@ -84,13 +87,14 @@ function InsertToDatabase() {
 
 function updateDatabase() {
     for (let i = 0; i < allData.length; i++) {
-        const selectionnedStreamer = allData[i];
+        const e = allData[i];
 
         // Verify streamer name in uppercase to avoid problems
-        if (selectionnedStreamer["streamer"].toUpperCase() == currentStreamer.toUpperCase()) {
-            selectionnedStreamer["minutes"] = minutes;
+        if (e["streamer"].toUpperCase() == currentStreamer.toUpperCase()) {
+            e["minutes"] = minutes;
+            // console.log("Info : data updated");
             localStorage.setItem("twitchTracker", JSON.stringify(allData));
-            return true;
+            return;
         }
     }
 }
@@ -104,23 +108,28 @@ function updateDatabase() {
  **/
 
 function twitchTracker() {
-    const url = window.location.href.split("/")[3];
-    const name = document.getElementsByTagName("h1")[0].innerText;
-    const video = document.getElementsByTagName("video")[0];
+    try {
+        const url = window.location.href.split("/")[3];
+        const name = document.getElementsByTagName("h1")[0].innerText;
+        const video = document.getElementsByTagName("video")[0];
 
-    if (url && name && video) {
-        currentStreamer = name;
-        allData = getAllData();
-        streamerData = getStreamerData();
-        seconds = 0;
-        minutes = (streamerData) ? streamerData : 0;
-        tracker = setInterval(startTracker, 1000);
-
-        console.log(`Info : current streamer is ${currentStreamer}`);
+        if (url && name && video) {
+            currentStreamer = name;
+            allData = getAllData();
+            streamerData = getStreamerData();
+            seconds = 0;
+            minutes = (streamerData) ? streamerData : 0;
+            tracker = setInterval(startTracker, INTERVAL_TRACKER);
+            console.log(`Info : current streamer is ${currentStreamer}`);
+        }
+        else {
+            console.log(`Info : ${RETRY_MESSAGE}`);
+            setTimeout(twitchTracker, TIMEOUT_RETRY);
+        }
     }
-    else {
-        console.log("Info : not watching a live stream, new try in a few seconds")
-        setTimeout(twitchTracker, 10000);
+    catch {
+        console.log(`Info : ${RETRY_MESSAGE}`);
+        setTimeout(twitchTracker, TIMEOUT_RETRY);
     }
 }
 
@@ -139,17 +148,17 @@ function startTracker() {
         if (video) {
             const videoPaused = video.paused;
             const checkStreamer = document.getElementsByTagName("h1")[0].innerText.toUpperCase();
-    
+
             if (videoPaused || checkStreamer != currentStreamer.toUpperCase()) {
-                console.log("Info : stream is loading, is paused or has changed, reload in a few seconds");
+                console.log(`Info : ${RELOAD_MESSAGE}`);
                 clearInterval(tracker);
-                setTimeout(twitchTracker, 5000);
+                setTimeout(twitchTracker, TIMETOUT_RELOAD);
             }
         }
         else {
-            console.log("Info : not watching a live stream, new try in a few seconds");
-                clearInterval(tracker);
-                setTimeout(twitchTracker, 5000);
+            console.log(`Info : ${RELOAD_MESSAGE}`);
+            clearInterval(tracker);
+            setTimeout(twitchTracker, TIMETOUT_RELOAD);
         }
     }
 
