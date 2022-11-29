@@ -5,11 +5,16 @@ html {
 
 h3 {
     text-align: center;
+    padding: 0 3px;
+}
+
+p {
+    text-align: center;
 }
 
 /* Make table scrollable with a fix height */
 table {
-    display: block;
+    display: none;
     height: 150px;
     overflow-y: scroll;
 }

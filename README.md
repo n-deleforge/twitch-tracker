@@ -18,8 +18,9 @@ This extension is still on early development. It might not working because of yo
 
 # Changelog
 
+- 0.3.3 : Extension works in any tabs now, data is saved to look at it outside of Twitch tabs
 - 0.3.2 : Fixes about the new detection system
 - 0.3 : Streamer detection modfied (H1 tag) and checks added (video tag etc.)
 - 0.2.1 : Streamer detection modified (URL instead of Window title)
-- 0.2 : Fix a problem with multiples trackers started instead of only one.
-- 0.1 : Initial release.
+- 0.2 : Fix a problem with multiples trackers started instead of only one
+- 0.1 : Initial release

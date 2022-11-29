@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
             browser.tabs.sendMessage(
                 tabs[0].id,
                 { from: 'popup', subject: 'sendData' },
-                displayData
+                fulfillTable
             );
         });
 });
@@ -17,50 +17,43 @@ window.addEventListener('DOMContentLoaded', () => {
  *  Fulfill table with data
  **/
 
-const displayData = data => {
-    const
-        content = document.getElementById("content"),
-        table = document.createElement("table"),
-        thead = document.createElement("thead"),
-        thStreamer = document.createElement("th"),
-        thWatchtime = document.createElement("th"),
-        tbody = document.createElement("tbody");
+function fulfillTable(data) {
+    // At first, hide message and display table
+    document.getElementById("message").style.display = "none"; 
+    document.getElementById("table").style.display = "block"; 
 
-    if (data) {
-        document.getElementById("message").remove();
-
-        content.append(table);
-        table.append(thead);
-        thead.append(thStreamer);
-        thead.append(thWatchtime);
-        table.append(tbody);
-
-        thStreamer.textContent = "Streamer";
-        thWatchtime.textContent = "Watchtime";
-
-        // Create table data
-        for (let i = 0; i < data.length; i++) {
-            const
-                streamer = data[i]['streamer'],
-                tr = document.createElement("tr"),
-                tdStreamer = document.createElement("td"),
-                tdWatchtime = document.createElement("td");
-
-            tbody.append(tr);
-            tr.append(tdStreamer);
-            tr.append(tdWatchtime);
-
-            let
-                hours = 0,
-                minutes = data[i]["minutes"];
-
-            if (minutes > 60) {
-                hours = Math.floor(minutes / 60);
-                minutes = minutes % 60;
-            }
-
-            tdStreamer.textContent = streamer
-            tdWatchtime.textContent = `${hours}h ${minutes}m`;
-        }
+    // If no data available, get the old saved data
+    if (!data) {
+        let savedData = localStorage.getItem("twitch-tracker");
+        if (!savedData) savedData = localStorage.setItem("twitch-tracker", "");
+        data = JSON.parse(savedData);
     }
-};
+
+    // If there is data, save it
+    else localStorage.setItem("twitch-tracker", JSON.stringify(data));
+
+    // Display data
+    for (let i = 0; i < data.length; i++) {
+        const
+            streamer = data[i]['streamer'],
+            tr = document.createElement("tr"),
+            tdStreamer = document.createElement("td"),
+            tdWatchtime = document.createElement("td");
+
+        document.getElementById("tbody").append(tr);
+        tr.append(tdStreamer);
+        tr.append(tdWatchtime);
+
+        let
+            hours = 0,
+            minutes = data[i]["minutes"];
+
+        if (minutes > 60) {
+            hours = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+        }
+
+        tdStreamer.textContent = streamer
+        tdWatchtime.textContent = `${hours}h ${minutes}m`;
+    }
+}
