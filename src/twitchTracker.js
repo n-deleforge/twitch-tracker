@@ -2,7 +2,7 @@
 // ======= VARIABLES
 
 const
-    APP_VERSION = "0.3.2",
+    APP_VERSION = "0.3.4",
     APP_NAME = "Twitch Tracker",
     GITHUB_LINK = "https://github.com/n-deleforge/twitch-tracker/",
     TIMEOUT_RETRY = 10000,

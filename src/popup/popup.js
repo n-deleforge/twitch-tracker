@@ -18,42 +18,49 @@ window.addEventListener('DOMContentLoaded', () => {
  **/
 
 function fulfillTable(data) {
-    // At first, hide message and display table
-    document.getElementById("message").style.display = "none"; 
-    document.getElementById("table").style.display = "block"; 
-
-    // If no data available, get the old saved data
+    // Check for data availlability
     if (!data) {
         let savedData = localStorage.getItem("twitch-tracker");
         if (!savedData) savedData = localStorage.setItem("twitch-tracker", "");
         data = JSON.parse(savedData);
     }
-
-    // If there is data, save it
     else localStorage.setItem("twitch-tracker", JSON.stringify(data));
 
-    // Display data
-    for (let i = 0; i < data.length; i++) {
-        const
-            streamer = data[i]['streamer'],
-            tr = document.createElement("tr"),
-            tdStreamer = document.createElement("td"),
-            tdWatchtime = document.createElement("td");
+    // Display only a message if there is no data
+    if (data.length === 0 || data === "" || data === "undefined") document.getElementById("message").textContent = "No data yet.";
 
-        document.getElementById("tbody").append(tr);
-        tr.append(tdStreamer);
-        tr.append(tdWatchtime);
+    // Display and fulfill table if there is enough data
+    else {
+        document.getElementById("message").remove();
+        document.getElementById("table").style.display = "block";
 
-        let
-            hours = 0,
-            minutes = data[i]["minutes"];
+        // Display data
+        for (let i = 0; i < data.length; i++) {
+            const
+                streamer = data[i]['streamer'],
+                tr = document.createElement("tr"),
+                tdStreamer = document.createElement("td"),
+                tdWatchtime = document.createElement("td");
 
-        if (minutes > 60) {
-            hours = Math.floor(minutes / 60);
-            minutes = minutes % 60;
+            // Create a new line in the table
+            document.getElementById("tbody").append(tr);
+            tr.append(tdStreamer);
+            tr.append(tdWatchtime);
+
+            // Determine time in minutes and hours
+            let
+                hours = 0,
+                minutes = data[i]["minutes"];
+
+            // Count hours for each streamer
+            if (minutes > 60) {
+                hours = Math.floor(minutes / 60);
+                minutes = minutes % 60;
+            }
+
+            // Fulfill the new line with data
+            tdStreamer.textContent = streamer
+            tdWatchtime.textContent = `${hours}h ${minutes}m`;
         }
-
-        tdStreamer.textContent = streamer
-        tdWatchtime.textContent = `${hours}h ${minutes}m`;
     }
 }
